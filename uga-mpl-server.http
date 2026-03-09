@@ -1,0 +1,6 @@
+@uga_mpl_server_HostAddress = http://localhost:5274
+
+GET {{uga_mpl_server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
