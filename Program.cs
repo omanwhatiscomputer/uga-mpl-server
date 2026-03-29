@@ -50,6 +50,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// For running android emulators on PC (localhost passthrough)
+builder.WebHost.UseUrls("http://0.0.0.0:5274");
 
 var app = builder.Build();
 

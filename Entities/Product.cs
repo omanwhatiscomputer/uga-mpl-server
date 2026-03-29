@@ -13,4 +13,5 @@ public class Product
     public string ProductName { get; set; } = null!;
     public string ProductDescription { get; set; } = null!;
     public decimal Price { get; set; }
+    public string DateCreated { get; set; } = DateTime.UtcNow.ToString("o");
 }
