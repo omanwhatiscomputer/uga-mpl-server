@@ -50,6 +50,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+/** Not sure how I would integrate this one as well Alongside Google SSO. Also connect the DB from here. Example shown below.
+
+builder.Services.AddAuthentication(x => 
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x=> {
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"))),
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+    
+});
+
+builder.Services.AddDbContext<UserDbContext>(opt =>
+{
+    // opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseNpgsql(Environment.GetEnvironmentVariable("POSTGRESQL_CONN_STRING"));
+});
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+*/
+
 // For running android emulators on PC (localhost passthrough)
 builder.WebHost.UseUrls("http://0.0.0.0:5274");
 
