@@ -1,7 +1,9 @@
-using uga_mpl_server;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using uga_mpl_server;
+using uga_mpl_server.RequestHelpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true
         };
     });
+
+// Connect db
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(
+        Environment.GetEnvironmentVariable("DB_CONN_STRING")
+    ));
+
+builder.Services.AddControllers();
+
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 /** Not sure how I would integrate this one as well Alongside Google SSO. Also connect the DB from here. Example shown below.
 
