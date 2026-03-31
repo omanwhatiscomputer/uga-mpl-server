@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using uga_mpl_server.DTO.Auth;
 
 namespace uga_mpl_server;
 
@@ -31,6 +32,21 @@ public class AuthController : ControllerBase
             googleId = userId,
             email,
             name
+        });
+    }
+
+    // http://localhost:5274/api/auth/dev-signin
+    [HttpPost("dev-signin")]
+    public IActionResult DevSignIn([FromBody] DevSignInDTO body)
+    {
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
+            return NotFound();
+
+        return Ok(new
+        {
+            message = "Dev authenticated",
+            email = body.Email,
+            name = body.Name
         });
     }
 }

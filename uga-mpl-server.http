@@ -1,6 +1,31 @@
 @uga_mpl_server_HostAddress = http://localhost:5274
 
-GET {{uga_mpl_server_HostAddress}}/weatherforecast/
-Accept: application/json
+### Dev Sign In (Development only)
+POST {{uga_mpl_server_HostAddress}}/api/auth/dev-signin
+Content-Type: application/json
 
+{
+  "email": "test@uga.edu",
+  "name": "Test User"
+}
+
+###
+
+### Google Sign In (requires valid Google ID token)
+POST {{uga_mpl_server_HostAddress}}/api/auth/google-signin
+Content-Type: application/json
+Authorization: Bearer {{GOOGLE_ID_TOKEN}}
+
+###
+
+### CreateUser
+POST {{uga_mpl_server_HostAddress}}/api/user
+Content-Type: application/json
+
+{
+  "firstName": "Jackson",
+  "lastName": "Crim",
+  "email": "jackson@example.com",
+  "mobileNumber": "555-123-5678"
+}
 ###

@@ -7,5 +7,5 @@ public class UserDTO
     public string LastName { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string MobileNumber { get; set; } = null!;
-    public string DateJoined { get; set; } = null!;
+    public DateTime? DateJoined { get; set; } = null!;
 }
