@@ -49,7 +49,7 @@ public class AuthController(ApplicationDBContext db, IConfiguration config, IMap
     // http://localhost:5274/api/auth/google-signup
     [HttpPost("google-signup")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public IActionResult GoogleSignUp()
+    public async Task<IActionResult> GoogleSignUp()
     {
         // If we reach here, the token is already validated by middleware.
         // Extract claims the middleware parsed from the Google ID token.
@@ -57,6 +57,9 @@ public class AuthController(ApplicationDBContext db, IConfiguration config, IMap
         var email = User.FindFirstValue(ClaimTypes.Email);
         var name = User.FindFirstValue("name");
 
+        var exists = await db.Users.AnyAsync(u => u.Email == email);
+        if (exists)
+            return Conflict(new { message = "An account with this email already exists." });
 
         return Ok(new
         {
