@@ -14,4 +14,5 @@ public class Product
     public string ProductDescription { get; set; } = null!;
     public decimal Price { get; set; }
     public string DateCreated { get; set; } = DateTime.UtcNow.ToString("o");
+    public bool IsAvailable { get; set; } = true;
 }

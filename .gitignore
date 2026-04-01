@@ -8,3 +8,4 @@ bin/
 ehthumbs.db
 Thumbs.db
 .env
+error.log
