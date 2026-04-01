@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using uga_mpl_server.Data;
@@ -14,6 +15,7 @@ public class UserController(ApplicationDBContext db, IConfiguration config, IMap
 {
     // GET api/user/by-email?email=...
     // Used by the client after Google SSO to check if a user account exists.
+    [Authorize]
     [HttpGet("by-email")]
     public async Task<ActionResult<UserDTO>> GetUserByEmail([FromQuery] string email)
     {
@@ -24,6 +26,19 @@ public class UserController(ApplicationDBContext db, IConfiguration config, IMap
 
         if (user == null)
             return NotFound(new { message = "Email not found." });
+
+        return Ok(mapper.Map<UserDTO>(user));
+    }
+
+    // GET api/user/{id}
+    [Authorize]
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<UserDTO>> GetUserById(Guid id)
+    {
+        var user = await db.Users.FindAsync(id);
+
+        if (user == null)
+            return NotFound(new { message = "User not found." });
 
         return Ok(mapper.Map<UserDTO>(user));
     }
