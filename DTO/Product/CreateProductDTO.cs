@@ -15,4 +15,7 @@ public class CreateProductDTO
     public decimal Price { get; set; }
 
     public List<string> ProductImages { get; set; } = new List<string>();
+
+    [Required]
+    public string Category { get; set; } = null!;
 }

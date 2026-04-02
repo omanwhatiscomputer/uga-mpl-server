@@ -11,4 +11,5 @@ public class ProductDTO
     public decimal Price { get; set; }
     public string DateCreated { get; set; } = null!;
     public bool IsAvailable { get; set; }
+    public string Category { get; set; } = null!;
 }

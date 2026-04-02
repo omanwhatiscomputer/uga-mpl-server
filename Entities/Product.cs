@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using uga_mpl_server.Enums;
 
 namespace uga_mpl_server.Entities;
 
@@ -15,4 +16,5 @@ public class Product
     public decimal Price { get; set; }
     public string DateCreated { get; set; } = DateTime.UtcNow.ToString("o");
     public bool IsAvailable { get; set; } = true;
+    public Category Category { get; set; }
 }
