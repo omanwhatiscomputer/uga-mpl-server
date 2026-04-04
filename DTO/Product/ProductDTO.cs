@@ -14,6 +14,7 @@ public class ProductDTO
     public string DateCreated { get; set; } = null!;
     public bool IsAvailable { get; set; }
     public string Category { get; set; } = null!;
+    public string Condition { get; set; } = null!;
     public List<UserSummaryDTO> Subscribers { get; set; } = new List<UserSummaryDTO>();
     public List<UserSummaryDTO> WishlistedBy { get; set; } = new List<UserSummaryDTO>();
 }

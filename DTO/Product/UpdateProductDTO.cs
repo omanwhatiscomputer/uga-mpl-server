@@ -13,4 +13,5 @@ public class UpdateProductDTO
     public List<string> ProductImages { get; set; }
     public bool IsAvailable { get; set; }
     public string? Category { get; set; }
+    public string? Condition { get; set; }
 }

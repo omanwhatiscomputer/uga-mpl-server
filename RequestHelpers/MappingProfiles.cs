@@ -27,23 +27,31 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.SellerName,
                 opt => opt.MapFrom(src => src.Seller.FirstName + " " + src.Seller.LastName))
             .ForMember(dest => dest.Category,
-                opt => opt.MapFrom(src => src.Category.ToString()));
+                opt => opt.MapFrom(src => src.Category.ToString()))
+            .ForMember(dest => dest.Condition,
+                opt => opt.MapFrom(src => src.Condition.ToString()));
 
         CreateMap<Product, ProductDTO>()
             .ForMember(dest => dest.SellerName,
                 opt => opt.MapFrom(src => src.Seller.FirstName + " " + src.Seller.LastName))
             .ForMember(dest => dest.Category,
                 opt => opt.MapFrom(src => src.Category.ToString()))
+            .ForMember(dest => dest.Condition,
+                opt => opt.MapFrom(src => src.Condition.ToString()))
             .ForMember(dest => dest.Subscribers, opt => opt.Ignore())
             .ForMember(dest => dest.WishlistedBy, opt => opt.Ignore());
 
         CreateMap<CreateProductDTO, Product>()
             .ForMember(dest => dest.Category,
-                opt => opt.MapFrom(src => Enum.Parse<Category>(src.Category, true)));
+                opt => opt.MapFrom(src => Enum.Parse<Category>(src.Category, true)))
+            .ForMember(dest => dest.Condition,
+                opt => opt.MapFrom(src => Enum.Parse<ProductCondition>(src.Condition, true)));
 
         CreateMap<UpdateProductDTO, Product>()
             .ForMember(dest => dest.Category,
                 opt => opt.MapFrom(src => Enum.Parse<Category>(src.Category!, true)))
+            .ForMember(dest => dest.Condition,
+                opt => opt.MapFrom(src => Enum.Parse<ProductCondition>(src.Condition!, true)))
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
     }
 }

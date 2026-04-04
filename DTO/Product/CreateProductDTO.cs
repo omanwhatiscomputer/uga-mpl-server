@@ -18,4 +18,7 @@ public class CreateProductDTO
 
     [Required]
     public string Category { get; set; } = null!;
+
+    [Required]
+    public string Condition { get; set; } = null!;
 }

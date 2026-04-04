@@ -6,6 +6,7 @@ public class ProductSummaryDTO
     public string ProductName { get; set; } = null!;
     public decimal Price { get; set; }
     public string Category { get; set; } = null!;
+    public string Condition { get; set; } = null!;
     public string SellerName { get; set; } = null!;
     public bool IsAvailable { get; set; }
     public List<string> ProductImages { get; set; } = new List<string>();
