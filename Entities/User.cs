@@ -12,4 +12,6 @@ public class User
     public string Email { get; set; } = null!;
     public string MobileNumber { get; set; } = null!;
     public string DateJoined { get; set; } = DateTime.UtcNow.ToString("o");
+    public List<Guid> WishlistedProductIds { get; set; } = new List<Guid>();
+    public List<Guid> SubscribedProductIds { get; set; } = new List<Guid>();
 }

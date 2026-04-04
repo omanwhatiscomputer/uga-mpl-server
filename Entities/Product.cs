@@ -17,4 +17,6 @@ public class Product
     public string DateCreated { get; set; } = DateTime.UtcNow.ToString("o");
     public bool IsAvailable { get; set; } = true;
     public Category Category { get; set; }
+    public List<Guid> WishlistedByUserIds { get; set; } = new List<Guid>();
+    public List<Guid> SubscriberIds { get; set; } = new List<Guid>();
 }
