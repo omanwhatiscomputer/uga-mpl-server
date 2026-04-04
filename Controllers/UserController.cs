@@ -157,7 +157,7 @@ public class UserController(ApplicationDBContext db, IConfiguration config, IMap
         return dto;
     }
 
-    private async Task<(User? user, Product? product, IActionResult? error)> ResolveUserAndProduct(Guid productId)
+    private async Task<(User user, Product product, IActionResult error)> ResolveUserAndProduct(Guid productId)
     {
         var userIdClaim = User.FindFirst("userid")?.Value;
 
