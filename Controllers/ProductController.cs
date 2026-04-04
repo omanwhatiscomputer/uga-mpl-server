@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using uga_mpl_server.Data;
 using uga_mpl_server.DTO.Product;
+using uga_mpl_server.DTO.User;
 using uga_mpl_server.Entities;
+using uga_mpl_server.Enums;
 
 namespace uga_mpl_server.Controllers;
 
@@ -13,32 +15,6 @@ namespace uga_mpl_server.Controllers;
 [Authorize]
 public class ProductController(ApplicationDBContext db, IMapper mapper) : ControllerBase
 {
-    // GET api/product
-    [HttpGet]
-    public async Task<ActionResult<List<ProductDTO>>> GetProducts()
-    {
-        var products = await db.Products
-            .Include(p => p.Seller)
-            .OrderByDescending(p => p.DateCreated)
-            .ToListAsync();
-
-        return Ok(mapper.Map<List<ProductDTO>>(products));
-    }
-
-    // GET api/product/{id}
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ProductDTO>> GetProductById(Guid id)
-    {
-        var product = await db.Products
-            .Include(p => p.Seller)
-            .FirstOrDefaultAsync(p => p.Id == id);
-
-        if (product == null)
-            return NotFound(new { message = "Product not found." });
-
-        return Ok(mapper.Map<ProductDTO>(product));
-    }
-
     // POST api/product
     [HttpPost]
     public async Task<ActionResult<ProductDTO>> CreateProduct(CreateProductDTO createProductDTO)
@@ -60,37 +36,38 @@ public class ProductController(ApplicationDBContext db, IMapper mapper) : Contro
         db.Products.Add(product);
         await db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, mapper.Map<ProductDTO>(product));
+        return CreatedAtAction(nameof(CreateProduct), await BuildProductDTO(product));
     }
 
-    // PATCH api/product/{id}
-    [HttpPatch("{id:guid}")]
-    public async Task<ActionResult<ProductDTO>> UpdateProduct(Guid id, UpdateProductDTO updateProductDTO)
+    // GET api/product
+    [HttpGet]
+    public async Task<ActionResult<List<ProductSummaryDTO>>> GetAllProducts()
     {
-        var sellerIdClaim = User.FindFirst("userid")?.Value;
-
-        if (string.IsNullOrEmpty(sellerIdClaim) || !Guid.TryParse(sellerIdClaim, out var sellerId))
-            return Unauthorized(new { message = "Invalid token." });
-
-        var product = await db.Products
+        var products = await db.Products
             .Include(p => p.Seller)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .ToListAsync();
 
-        if (product == null)
-            return NotFound(new { message = "Product not found." });
-
-        if (product.SellerId != sellerId)
-            return Forbid();
-
-        mapper.Map(updateProductDTO, product);
-        await db.SaveChangesAsync();
-
-        return Ok(mapper.Map<ProductDTO>(product));
+        return Ok(mapper.Map<List<ProductSummaryDTO>>(products));
     }
 
-    // DELETE api/product/{id}
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteProduct(Guid id)
+    // GET api/product/category/{category}
+    [HttpGet("category/{category}")]
+    public async Task<ActionResult<List<ProductSummaryDTO>>> GetProductsByCategory(string category)
+    {
+        if (!Enum.TryParse<Enums.Category>(category, ignoreCase: true, out var parsedCategory))
+            return BadRequest(new { message = $"Invalid category '{category}'." });
+
+        var products = await db.Products
+            .Where(p => p.Category == parsedCategory)
+            .Include(p => p.Seller)
+            .ToListAsync();
+
+        return Ok(mapper.Map<List<ProductSummaryDTO>>(products));
+    }
+
+    // GET api/product/{id}/subscribers
+    [HttpGet("{id:guid}/subscribers")]
+    public async Task<ActionResult<List<UserSummaryDTO>>> GetSubscribers(Guid id)
     {
         var sellerIdClaim = User.FindFirst("userid")?.Value;
 
@@ -105,9 +82,30 @@ public class ProductController(ApplicationDBContext db, IMapper mapper) : Contro
         if (product.SellerId != sellerId)
             return Forbid();
 
-        db.Products.Remove(product);
-        await db.SaveChangesAsync();
+        var subscribers = await db.Users
+            .Where(u => product.SubscriberIds.Contains(u.Id))
+            .ToListAsync();
 
-        return NoContent();
+        return Ok(mapper.Map<List<UserSummaryDTO>>(subscribers));
+    }
+
+    // --- Helpers ---
+
+    private async Task<ProductDTO> BuildProductDTO(Product product)
+    {
+        var dto = mapper.Map<ProductDTO>(product);
+
+        var subscribers = await db.Users
+            .Where(u => product.SubscriberIds.Contains(u.Id))
+            .ToListAsync();
+
+        var wishlistedBy = await db.Users
+            .Where(u => product.WishlistedByUserIds.Contains(u.Id))
+            .ToListAsync();
+
+        dto.Subscribers = mapper.Map<List<UserSummaryDTO>>(subscribers);
+        dto.WishlistedBy = mapper.Map<List<UserSummaryDTO>>(wishlistedBy);
+
+        return dto;
     }
 }
