@@ -50,6 +50,20 @@ public class ProductController(ApplicationDBContext db, IMapper mapper) : Contro
         return Ok(mapper.Map<List<ProductSummaryDTO>>(products));
     }
 
+    // GET api/product/{id}
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<ProductDTO>> GetProductById(Guid id)
+    {
+        var product = await db.Products
+            .Include(p => p.Seller)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+            return NotFound(new { message = "Product not found." });
+
+        return Ok(await BuildProductDTO(product));
+    }
+
     // GET api/product/category/{category}
     [HttpGet("category/{category}")]
     public async Task<ActionResult<List<ProductSummaryDTO>>> GetProductsByCategory(string category)

@@ -9,5 +9,6 @@ public class ProductSummaryDTO
     public string Condition { get; set; } = null!;
     public string SellerName { get; set; } = null!;
     public bool IsAvailable { get; set; }
+    public DateTime DateCreated { get; set; }
     public List<string> ProductImages { get; set; } = new List<string>();
 }
