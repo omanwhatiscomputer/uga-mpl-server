@@ -25,6 +25,7 @@ public class AuthController(ApplicationDBContext db, IConfiguration config, IMap
         var email = User.FindFirstValue(ClaimTypes.Email);
         var name = User.FindFirstValue("name");
 
+        // %%%%%%%%%%%%%%%% VALIDATE UGA EMAIL DOMAIN %%%%%%%%%%%%%%%%
         if (string.IsNullOrEmpty(email) || !email.EndsWith("@uga.edu", StringComparison.OrdinalIgnoreCase))
             return Unauthorized(new { message = "Only UGA email addresses are permitted." });
 
@@ -74,6 +75,7 @@ public class AuthController(ApplicationDBContext db, IConfiguration config, IMap
     [HttpPost("create-account")]
     public async Task<IActionResult> CreateAccount(CreateUserDTO createUserDTO)
     {
+        // %%%%%%%%%%%%%%%% VALIDATE UGA EMAIL DOMAIN %%%%%%%%%%%%%%%%
         if (!createUserDTO.Email.EndsWith("@uga.edu", StringComparison.OrdinalIgnoreCase))
             return BadRequest(new { message = "Only UGA email addresses are permitted." });
 

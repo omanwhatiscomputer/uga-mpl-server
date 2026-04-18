@@ -49,6 +49,7 @@ public class UserController(ApplicationDBContext db, IConfiguration config, IMap
     [HttpPost]
     public async Task<ActionResult<UserDTO>> CreateUser(CreateUserDTO createUserDTO)
     {
+        // %%%%%%%%%%%%%%%% VALIDATE UGA EMAIL DOMAIN %%%%%%%%%%%%%%%%
         if (!createUserDTO.Email.EndsWith("@uga.edu", StringComparison.OrdinalIgnoreCase))
             return BadRequest(new { message = "Only UGA email addresses are permitted." });
 
