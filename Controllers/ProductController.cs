@@ -64,6 +64,39 @@ public class ProductController(ApplicationDBContext db, IMapper mapper) : Contro
         return Ok(await BuildProductDTO(product));
     }
 
+    // DELETE api/product/{id}
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteProduct(Guid id)
+    {
+        var sellerIdClaim = User.FindFirst("userid")?.Value;
+
+        if (string.IsNullOrEmpty(sellerIdClaim) || !Guid.TryParse(sellerIdClaim, out var sellerId))
+            return Unauthorized(new { message = "Invalid token." });
+
+        var product = await db.Products.FindAsync(id);
+
+        if (product == null)
+            return NotFound(new { message = "Product not found." });
+
+        if (product.SellerId != sellerId)
+            return Forbid();
+
+        var affectedUsers = await db.Users
+            .Where(u => u.WishlistedProductIds.Contains(id) || u.SubscribedProductIds.Contains(id))
+            .ToListAsync();
+
+        foreach (var user in affectedUsers)
+        {
+            user.WishlistedProductIds.Remove(id);
+            user.SubscribedProductIds.Remove(id);
+        }
+
+        db.Products.Remove(product);
+        await db.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     // GET api/product/category/{category}
     [HttpGet("category/{category}")]
     public async Task<ActionResult<List<ProductSummaryDTO>>> GetProductsByCategory(string category)
