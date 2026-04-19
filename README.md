@@ -36,3 +36,9 @@ Default URL: `http://localhost:5274`
 - `DELETE /api/product/{id}`: Delete a product (owner only).
 
 Responses use `ProductDTO`, including seller info (`SellerName`) and basic product fields.
+
+## Important flag
+
+```
+%%%%%%%%%%%%%%%% VALIDATE UGA EMAIL DOMAIN %%%%%%%%%%%%%%%%
+```
