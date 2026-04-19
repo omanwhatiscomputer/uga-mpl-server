@@ -57,6 +57,8 @@ public class MappingProfiles : Profile
                 opt => opt.MapFrom(src => src.Product.ProductName));
 
         CreateMap<UpdateProductDTO, Product>()
+            .ForMember(dest => dest.Price,
+                opt => opt.Condition((src, dest) => src.Price != 0))
             .ForMember(dest => dest.Category,
                 opt => opt.MapFrom(src => Enum.Parse<Category>(src.Category!, true)))
             .ForMember(dest => dest.Condition,

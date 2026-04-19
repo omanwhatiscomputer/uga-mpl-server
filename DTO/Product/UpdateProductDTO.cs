@@ -9,9 +9,6 @@ public class UpdateProductDTO
 
     [Range(0.01, double.MaxValue)]
     public decimal Price { get; set; }
-
-    public List<string> ProductImages { get; set; }
-    public bool IsAvailable { get; set; }
-    public string? Category { get; set; }
-    public string? Condition { get; set; }
+    public string Category { get; set; }
+    public string Condition { get; set; }
 }
