@@ -14,4 +14,5 @@ public class User
     public string DateJoined { get; set; } = DateTime.UtcNow.ToString("o");
     public List<Guid> WishlistedProductIds { get; set; } = new List<Guid>();
     public List<Guid> SubscribedProductIds { get; set; } = new List<Guid>();
+    public string ExpoPushToken { get; set; }
 }

@@ -97,6 +97,56 @@ public class ProductController(ApplicationDBContext db, IMapper mapper) : Contro
         return NoContent();
     }
 
+    // PATCH api/product/{id}
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult<ProductDTO>> UpdateProduct(Guid id, UpdateProductDTO updateProductDTO)
+    {
+        var sellerIdClaim = User.FindFirst("userid")?.Value;
+
+        if (string.IsNullOrEmpty(sellerIdClaim) || !Guid.TryParse(sellerIdClaim, out var sellerId))
+            return Unauthorized(new { message = "Invalid token." });
+
+        var product = await db.Products
+            .Include(p => p.Seller)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+            return NotFound(new { message = "Product not found." });
+
+        if (product.SellerId != sellerId)
+            return Forbid();
+
+        mapper.Map(updateProductDTO, product);
+        await db.SaveChangesAsync();
+
+        return Ok(await BuildProductDTO(product));
+    }
+
+    // PATCH api/product/{id}/availability
+    [HttpPatch("{id:guid}/availability")]
+    public async Task<ActionResult<ProductDTO>> ToggleAvailability(Guid id)
+    {
+        var sellerIdClaim = User.FindFirst("userid")?.Value;
+
+        if (string.IsNullOrEmpty(sellerIdClaim) || !Guid.TryParse(sellerIdClaim, out var sellerId))
+            return Unauthorized(new { message = "Invalid token." });
+
+        var product = await db.Products
+            .Include(p => p.Seller)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+            return NotFound(new { message = "Product not found." });
+
+        if (product.SellerId != sellerId)
+            return Forbid();
+
+        product.IsAvailable = !product.IsAvailable;
+        await db.SaveChangesAsync();
+
+        return Ok(await BuildProductDTO(product));
+    }
+
     // PATCH api/product/{id}/location
     [HttpPatch("{id:guid}/location")]
     public async Task<ActionResult<ProductDTO>> UpdateLocation(Guid id, LocationDTO locationDTO)

@@ -121,6 +121,26 @@ public class UserController(ApplicationDBContext db, IConfiguration config, IMap
         return NoContent();
     }
 
+    // PATCH api/user/push-token
+    [Authorize]
+    [HttpPatch("push-token")]
+    public async Task<IActionResult> SavePushToken(SavePushTokenDTO dto)
+    {
+        var userIdClaim = User.FindFirst("userid")?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized(new { message = "Invalid token." });
+
+        var user = await db.Users.FindAsync(userId);
+        if (user == null)
+            return NotFound(new { message = "User not found." });
+
+        user.ExpoPushToken = dto.ExpoPushToken;
+        await db.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     // DELETE api/user/subscribe/{productId}
     [Authorize]
     [HttpDelete("subscribe/{productId:guid}")]

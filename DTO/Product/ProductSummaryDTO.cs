@@ -3,6 +3,7 @@ namespace uga_mpl_server.DTO.Product;
 public class ProductSummaryDTO
 {
     public Guid Id { get; set; }
+    public Guid SellerId { get; set; }
     public string ProductName { get; set; } = null!;
     public decimal Price { get; set; }
     public string Category { get; set; } = null!;
