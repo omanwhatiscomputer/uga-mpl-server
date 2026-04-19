@@ -20,4 +20,5 @@ public class Product
     public ProductCondition Condition { get; set; }
     public List<Guid> WishlistedByUserIds { get; set; } = new List<Guid>();
     public List<Guid> SubscriberIds { get; set; } = new List<Guid>();
+    public Location MeetupLocation { get; set; }
 }

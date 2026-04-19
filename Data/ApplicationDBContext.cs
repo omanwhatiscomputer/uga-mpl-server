@@ -17,5 +17,8 @@ public class ApplicationDBContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Id)
             .IsUnique();
+
+        modelBuilder.Entity<Product>()
+            .OwnsOne(p => p.MeetupLocation);
     }
 }

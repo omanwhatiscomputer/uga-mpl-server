@@ -17,4 +17,5 @@ public class ProductDTO
     public string Condition { get; set; } = null!;
     public List<UserSummaryDTO> Subscribers { get; set; } = new List<UserSummaryDTO>();
     public List<UserSummaryDTO> WishlistedBy { get; set; } = new List<UserSummaryDTO>();
+    public LocationDTO MeetupLocation { get; set; }
 }

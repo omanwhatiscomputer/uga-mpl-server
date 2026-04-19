@@ -22,6 +22,9 @@ public class MappingProfiles : Profile
         CreateMap<UpdateUserDTO, User>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
+        // Location mapping
+        CreateMap<Location, LocationDTO>().ReverseMap();
+
         // Product mappings
         CreateMap<Product, ProductSummaryDTO>()
             .ForMember(dest => dest.SellerName,

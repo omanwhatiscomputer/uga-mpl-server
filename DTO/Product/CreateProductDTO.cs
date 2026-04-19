@@ -21,4 +21,6 @@ public class CreateProductDTO
 
     [Required]
     public string Condition { get; set; } = null!;
+
+    public LocationDTO MeetupLocation { get; set; }
 }

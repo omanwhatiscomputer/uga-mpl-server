@@ -11,4 +11,5 @@ public class ProductSummaryDTO
     public bool IsAvailable { get; set; }
     public DateTime DateCreated { get; set; }
     public List<string> ProductImages { get; set; } = new List<string>();
+    public LocationDTO MeetupLocation { get; set; }
 }

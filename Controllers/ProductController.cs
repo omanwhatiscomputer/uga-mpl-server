@@ -97,6 +97,31 @@ public class ProductController(ApplicationDBContext db, IMapper mapper) : Contro
         return NoContent();
     }
 
+    // PATCH api/product/{id}/location
+    [HttpPatch("{id:guid}/location")]
+    public async Task<ActionResult<ProductDTO>> UpdateLocation(Guid id, LocationDTO locationDTO)
+    {
+        var sellerIdClaim = User.FindFirst("userid")?.Value;
+
+        if (string.IsNullOrEmpty(sellerIdClaim) || !Guid.TryParse(sellerIdClaim, out var sellerId))
+            return Unauthorized(new { message = "Invalid token." });
+
+        var product = await db.Products
+            .Include(p => p.Seller)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+            return NotFound(new { message = "Product not found." });
+
+        if (product.SellerId != sellerId)
+            return Forbid();
+
+        product.MeetupLocation = mapper.Map<Location>(locationDTO);
+        await db.SaveChangesAsync();
+
+        return Ok(await BuildProductDTO(product));
+    }
+
     // GET api/product/category/{category}
     [HttpGet("category/{category}")]
     public async Task<ActionResult<List<ProductSummaryDTO>>> GetProductsByCategory(string category)
