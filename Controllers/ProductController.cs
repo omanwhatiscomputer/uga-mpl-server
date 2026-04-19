@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using uga_mpl_server.Data;
 using uga_mpl_server.DTO.Product;
+using uga_mpl_server.DTO.Transaction;
 using uga_mpl_server.DTO.User;
 using uga_mpl_server.Entities;
 using uga_mpl_server.Enums;
@@ -120,6 +121,48 @@ public class ProductController(ApplicationDBContext db, IMapper mapper) : Contro
         await db.SaveChangesAsync();
 
         return Ok(await BuildProductDTO(product));
+    }
+
+    // POST api/product/{id}/sell
+    [HttpPost("{id:guid}/sell")]
+    public async Task<ActionResult<TransactionDTO>> SellProduct(Guid id, SellProductDTO sellProductDTO)
+    {
+        var sellerIdClaim = User.FindFirst("userid")?.Value;
+
+        if (string.IsNullOrEmpty(sellerIdClaim) || !Guid.TryParse(sellerIdClaim, out var sellerId))
+            return Unauthorized(new { message = "Invalid token." });
+
+        var product = await db.Products
+            .Include(p => p.Seller)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+            return NotFound(new { message = "Product not found." });
+
+        if (product.SellerId != sellerId)
+            return Forbid();
+
+        var buyer = await db.Users.FindAsync(sellProductDTO.BuyerId);
+        if (buyer == null)
+            return NotFound(new { message = "Buyer not found." });
+
+        var transaction = new Transaction
+        {
+            ProductId = product.Id,
+            Product = product,
+            SellerId = sellerId,
+            Seller = product.Seller,
+            BuyerId = buyer.Id,
+            Buyer = buyer,
+            Price = product.Price
+        };
+
+        product.IsAvailable = false;
+
+        db.Transactions.Add(transaction);
+        await db.SaveChangesAsync();
+
+        return Ok(mapper.Map<TransactionDTO>(transaction));
     }
 
     // PATCH api/product/{id}/availability

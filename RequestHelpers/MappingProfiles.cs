@@ -1,5 +1,6 @@
 using AutoMapper;
 using uga_mpl_server.DTO.Product;
+using uga_mpl_server.DTO.Transaction;
 using uga_mpl_server.DTO.User;
 using uga_mpl_server.Entities;
 using uga_mpl_server.Enums;
@@ -49,6 +50,11 @@ public class MappingProfiles : Profile
                 opt => opt.MapFrom(src => Enum.Parse<Category>(src.Category, true)))
             .ForMember(dest => dest.Condition,
                 opt => opt.MapFrom(src => Enum.Parse<ProductCondition>(src.Condition, true)));
+
+        // Transaction mappings
+        CreateMap<Transaction, TransactionDTO>()
+            .ForMember(dest => dest.ProductName,
+                opt => opt.MapFrom(src => src.Product.ProductName));
 
         CreateMap<UpdateProductDTO, Product>()
             .ForMember(dest => dest.Category,
