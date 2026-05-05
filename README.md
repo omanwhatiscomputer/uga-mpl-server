@@ -7,9 +7,9 @@ A simple ASP.NET Core Web API backend for a UGA marketplace project. The app is 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - PostgreSQL instance (local or hosted, e.g. [Neon](https://neon.tech))
 - EF Core CLI tools:
-  ```bash
-  dotnet tool install --global dotnet-ef
-  ```
+    ```bash
+    dotnet tool install --global dotnet-ef
+    ```
 - A Google Cloud project with OAuth 2.0 client IDs for Android, iOS, and Web
 
 ## Quick Start
@@ -27,7 +27,8 @@ AUTHENTICATION_GOOGLE_CLIENT_ID_ANDROID__=__...
 AUTHENTICATION_GOOGLE_CLIENT_ID_IOS__=__...
 ```
 
-**Generating a JWT key** — run this and paste the output as `JWT_KEY`:
+**Generating a JWT key** :: run this and paste the output as `JWT_KEY`:
+
 ```bash
 openssl rand -hex 64
 ```
@@ -45,60 +46,60 @@ Default URL: `http://localhost:5274`
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `POSTGRESQL_CONN_STRING` | Full Npgsql connection string to your PostgreSQL instance |
-| `JWT_ISSUER` | Issuer claim for app-issued JWTs — use the server base URL |
-| `JWT_KEY` | HS256 signing key, minimum 64 hex characters |
-| `AUTHENTICATION_GOOGLE_CLIENT_ID_WEB` | Google OAuth web client ID |
-| `AUTHENTICATION_GOOGLE_CLIENT_SECRET_WEB` | Google OAuth web client secret |
-| `AUTHENTICATION_GOOGLE_CLIENT_ID_ANDROID` | Google OAuth Android client ID |
-| `AUTHENTICATION_GOOGLE_CLIENT_ID_IOS` | Google OAuth iOS client ID |
+| Variable                                  | Description                                                 |
+| ----------------------------------------- | ----------------------------------------------------------- |
+| `POSTGRESQL_CONN_STRING`                  | Full Npgsql connection string to your PostgreSQL instance   |
+| `JWT_ISSUER`                              | Issuer claim for app-issued JWTs :: use the server base URL |
+| `JWT_KEY`                                 | HS256 signing key, minimum 64 hex characters                |
+| `AUTHENTICATION_GOOGLE_CLIENT_ID_WEB`     | Google OAuth web client ID                                  |
+| `AUTHENTICATION_GOOGLE_CLIENT_SECRET_WEB` | Google OAuth web client secret                              |
+| `AUTHENTICATION_GOOGLE_CLIENT_ID_ANDROID` | Google OAuth Android client ID                              |
+| `AUTHENTICATION_GOOGLE_CLIENT_ID_IOS`     | Google OAuth iOS client ID                                  |
 
 ## API Reference
 
-### Auth — `/api/auth`
+### Auth :: `/api/auth`
 
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| POST | `/api/auth/google-signin` | Google JWT | Sign in with Google, returns app JWT + user |
-| POST | `/api/auth/google-signup` | Google JWT | Verify Google token, check email availability |
-| POST | `/api/auth/create-account` | None | Create account, returns app JWT + user |
+| Method | Endpoint                   | Auth       | Description                                   |
+| ------ | -------------------------- | ---------- | --------------------------------------------- |
+| POST   | `/api/auth/google-signin`  | Google JWT | Sign in with Google, returns app JWT + user   |
+| POST   | `/api/auth/google-signup`  | Google JWT | Verify Google token, check email availability |
+| POST   | `/api/auth/create-account` | None       | Create account, returns app JWT + user        |
 
-### User — `/api/user`
+### User :: `/api/user`
 
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| GET | `/api/user/by-email?email=` | App JWT | Get user by email |
-| GET | `/api/user/{id}` | App JWT | Get user by ID |
-| POST | `/api/user` | None | Create user |
-| PATCH | `/api/user/push-token` | App JWT | Save Expo push notification token |
-| POST | `/api/user/wishlist/{productId}` | App JWT | Add product to wishlist |
-| DELETE | `/api/user/wishlist/{productId}` | App JWT | Remove product from wishlist |
-| POST | `/api/user/subscribe/{productId}` | App JWT | Subscribe to product |
-| DELETE | `/api/user/subscribe/{productId}` | App JWT | Unsubscribe from product |
+| Method | Endpoint                          | Auth    | Description                       |
+| ------ | --------------------------------- | ------- | --------------------------------- |
+| GET    | `/api/user/by-email?email=`       | App JWT | Get user by email                 |
+| GET    | `/api/user/{id}`                  | App JWT | Get user by ID                    |
+| POST   | `/api/user`                       | None    | Create user                       |
+| PATCH  | `/api/user/push-token`            | App JWT | Save Expo push notification token |
+| POST   | `/api/user/wishlist/{productId}`  | App JWT | Add product to wishlist           |
+| DELETE | `/api/user/wishlist/{productId}`  | App JWT | Remove product from wishlist      |
+| POST   | `/api/user/subscribe/{productId}` | App JWT | Subscribe to product              |
+| DELETE | `/api/user/subscribe/{productId}` | App JWT | Unsubscribe from product          |
 
-### Product — `/api/product`
+### Product :: `/api/product`
 
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| GET | `/api/product` | App JWT | Get all products |
-| GET | `/api/product/{id}` | App JWT | Get product by ID |
-| GET | `/api/product/category/{category}` | App JWT | Get products filtered by category |
-| POST | `/api/product` | App JWT | Create product |
-| PATCH | `/api/product/{id}` | App JWT | Update product details (seller only) |
-| PATCH | `/api/product/{id}/availability` | App JWT | Toggle availability (seller only) |
-| PATCH | `/api/product/{id}/location` | App JWT | Set meetup coordinates (seller only) |
-| POST | `/api/product/{id}/sell` | App JWT | Mark as sold and record transaction (seller only) |
-| GET | `/api/product/{id}/subscribers` | App JWT | Get subscriber list (seller only) |
-| DELETE | `/api/product/{id}` | App JWT | Delete product (seller only) |
+| Method | Endpoint                           | Auth    | Description                                       |
+| ------ | ---------------------------------- | ------- | ------------------------------------------------- |
+| GET    | `/api/product`                     | App JWT | Get all products                                  |
+| GET    | `/api/product/{id}`                | App JWT | Get product by ID                                 |
+| GET    | `/api/product/category/{category}` | App JWT | Get products filtered by category                 |
+| POST   | `/api/product`                     | App JWT | Create product                                    |
+| PATCH  | `/api/product/{id}`                | App JWT | Update product details (seller only)              |
+| PATCH  | `/api/product/{id}/availability`   | App JWT | Toggle availability (seller only)                 |
+| PATCH  | `/api/product/{id}/location`       | App JWT | Set meetup coordinates (seller only)              |
+| POST   | `/api/product/{id}/sell`           | App JWT | Mark as sold and record transaction (seller only) |
+| GET    | `/api/product/{id}/subscribers`    | App JWT | Get subscriber list (seller only)                 |
+| DELETE | `/api/product/{id}`                | App JWT | Delete product (seller only)                      |
 
-### Transaction — `/api/transaction`
+### Transaction :: `/api/transaction`
 
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| GET | `/api/transaction/sales` | App JWT | Get all sales for the current user |
-| GET | `/api/transaction/purchases` | App JWT | Get all purchases for the current user |
+| Method | Endpoint                     | Auth    | Description                            |
+| ------ | ---------------------------- | ------- | -------------------------------------- |
+| GET    | `/api/transaction/sales`     | App JWT | Get all sales for the current user     |
+| GET    | `/api/transaction/purchases` | App JWT | Get all purchases for the current user |
 
 ## Notes
 
